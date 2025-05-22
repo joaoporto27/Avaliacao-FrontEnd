@@ -4,3 +4,9 @@
   box-sizing: border-box;
   font-family: var(--font), sans-serif, Arial;
 }
+
+body {
+  background-image: url('/images/bgFront.jpg');
+  background-repeat: no-repeat;
+  background-size: cover;
+}

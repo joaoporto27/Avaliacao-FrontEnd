@@ -4,3 +4,20 @@
     justify-content: center;
     gap: 2rem;
 }
+
+.title {
+    text-align: center;
+    margin: 2rem;
+}
+
+.pagination {
+    display: flex;
+    justify-content: space-evenly;
+    margin-top: 2rem;
+}
+
+.button {
+    justify-content: center;
+    display: flex;
+    margin: 3rem;
+}

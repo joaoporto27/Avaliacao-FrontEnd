@@ -3,10 +3,12 @@
 import styles from "./Usuarios.module.css";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Pagination, Modal, Skeleton } from "antd";
+import { Pagination, Modal, Skeleton, Button } from "antd";
 import { ToastContainer, toast } from "react-toastify";
 import Image from "next/image";
 import UsuarioCard from "../../components/UsuarioCard";
+import Link from "next/link";
+
 
 const HEADERS = { "x-api-key": process.env.NEXT_PUBLIC_API_KEY };
 
@@ -15,7 +17,7 @@ export default function Usuarios() {
         usuarios: [],
         loading: true,
         current: 1,
-        pageSize: 0,
+        pageSize: 12,
     });
 
     const [modalInfo, setModalInfo] = useState({
@@ -34,7 +36,7 @@ export default function Usuarios() {
                         headers: HEADERS,
                     }
                 );
-                setData({ usuarios, loading: false, current: 1, pageSize: 8 });
+                setData({ usuarios, loading: false, current: 1, pageSize: 12 });
             } catch {
                 toast.error("Erro ao carregar os usuários");
                 setData((d) => ({ ...d, loading: false }));
@@ -68,24 +70,17 @@ export default function Usuarios() {
 
     return (
         <div>
-            <h1>Lista de usuários</h1>
-
-            <Pagination
-                current={data.current}
-                pageSize={data.pageSize}
-                total={data.usuarios.length}
-                onChange={(page) => setData((d) => ({ ...d, current: page }))}
-                showSizeChanger
-                pageSizeOptions={["5", "10", "20"]}
-            />
+            <h1 className={styles.title}>Lista de usuários</h1>
 
             {data.loading ? (
+                <div className={styles.loading}>
                 <Image
                     src="/images/loading.gif"
                     alt="Loading"
                     width={200}
                     height={200}
                 />
+                </div>
             ) : (
                 <div className={styles.cardContainer}>
                     {paginatedUsuarios().map((usuario) => (
@@ -98,53 +93,72 @@ export default function Usuarios() {
                 </div>
             )}
 
-           <Modal
-    title={`Posts de ${modalInfo.usuario?.name || ""}`}
-    open={modalInfo.visible}
-    onCancel={() =>
-        setModalInfo({
-            visible: false,
-            usuario: null,
-            posts: null,
-            loading: false,
-        })
-    }
-    onOk={() =>
-        setModalInfo({
-            visible: false,
-            usuario: null,
-            posts: null,
-            loading: false,
-        })
-    }
-    width={800}
->
-    {modalInfo.loading ? (
-        <Skeleton active />
-    ) : Array.isArray(modalInfo.posts) && modalInfo.posts.length > 0 ? (
-        <div className={styles.postsInfo}>
-            {modalInfo.posts.map((post) => (
-                <div key={post.id} className={styles.postItem}>
-                    <p>
-                        <span className={styles.label}>Título:</span> {post.title}
-                    </p>
-                    <p>
-                        <span className={styles.label}>Imagem:</span>
-                        <Image
-                            src={post.image}
-                            alt="Imagem do post"
-                            width={200}
-                            height={200}
-                        />
-                    </p>
+            <Modal
+                title={`Posts de ${modalInfo.usuario?.name || ""}`}
+                open={modalInfo.visible}
+                onCancel={() =>
+                    setModalInfo({
+                        visible: false,
+                        usuario: null,
+                        posts: null,
+                        loading: false,
+                    })
+                }
+                onOk={() =>
+                    setModalInfo({
+                        visible: false,
+                        usuario: null,
+                        posts: null,
+                        loading: false,
+                    })
+                }
+                width={800}
+            >
+                {modalInfo.loading ? (
+                    <Skeleton active />
+                ) : modalInfo.posts ? (
+                    <div className={styles.postsInfo}>
+                        {modalInfo.posts.map((post) => (
+                            <div key={post.id}>
+                                <p>
+                                    <span className={styles.label}>Título:</span> {post.title}
+                                </p>
+                                <p>
+                                    <span className={styles.label}>Imagem:</span>
+                                </p>
+                                <Image
+                                    src={post.image}
+                                    alt={`Imagem do post ${post.title}`}
+                                    width={200}
+                                    height={200}
+                                />
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p>Não há posts para este usuário</p>
+                )}
+            </Modal>
+
+            <Pagination
+                className={styles.pagination}
+                current={data.current}
+                pageSize={data.pageSize}
+                total={data.usuarios.length}
+                onChange={(page) => setData((d) => ({ ...d, current: page }))}
+                showSizeChanger
+                pageSizeOptions={["5", "10", "20"]}
+            />
+
+            <ToastContainer position="top-right" autoClose={6500} />
+
+            <div className={styles.button}>
+                    <Link href="/home">
+                        <Button type="primary" >Voltar a página de perfil</Button>
+                    </Link>
                 </div>
-            ))}
         </div>
-    ) : (
-        <p>Não há posts para este usuário</p>
-    )}
-</Modal>
-            <ToastContainer position="top-right" autoClose={3000} />
-        </div>
+
+
     );
 }
