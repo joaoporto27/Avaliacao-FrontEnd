@@ -21,6 +21,7 @@ export default function Home() {
                 <div className={styles.description}>
                     <h2 >João Vitor Porto Sales</h2>
                     <h3>2TDS1</h3>
+                    <h3>Front-End, Avaliação</h3>
                     <h3>Esta API tem o propósito de mostrar a implementação do front-end com back-end, para isso irei utilizar as tabelas Usuários e Posts.</h3>
                 </div>
                 <div className={styles.button}>
